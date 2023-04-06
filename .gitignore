@@ -1,0 +1,7 @@
+# dependencies
+/node_modules
+
+# misc
+/.old
+/tweteroo__front__base
+/tweteroo__front__bonus

@@ -15,12 +15,12 @@ app.post("/sign-up", (req, res) => {
         return;
     }
 
-    if (!req.body.username && typeof req.body.username !== "string") {
+    if (!req.body.username || typeof req.body.username !== "string") {
         res.status(400).send("Todos os campos são obrigatórios!");
         return;
     }
     
-    if (!req.body.avatar && typeof req.body.avatar !== "string") {
+    if (!req.body.avatar || typeof req.body.avatar !== "string") {
         res.status(400).send("Todos os campos são obrigatórios!");
         return;
     }

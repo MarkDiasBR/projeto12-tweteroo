@@ -12,24 +12,24 @@ app.post("/sign-up", (req, res) => {
 
     //Retorna 400 quando a propriedade 'username' e/ou 'avatar' não estão presentes
     if (!(req.body.hasOwnProperty("username")) || !(req.body.hasOwnProperty("avatar"))) {
-        res.status(400).send("Todos os campos são obrigatórios!");
+        res.status(statusCodes.badRequest).send(status.badRequest1);
         return;
     }
 
     //Retorna 400 quando o username é vazio e/ou não é string
     if (!req.body.username || typeof req.body.username !== "string") {
-        res.status(400).send("Todos os campos são obrigatórios!");
+        res.status(statusCodes.badRequest).send(status.badRequest1);
         return;
     }
     
     //Retorna 400 quando o avatar é vazio e/ou não é string
     if (!req.body.avatar || typeof req.body.avatar !== "string") {
-        res.status(400).send("Todos os campos são obrigatórios!");
+        res.status(statusCodes.badRequest).send(status.badRequest1);
         return;
     }
 
     usuarios.push(req.body);
-    res.status(201).send("OK");
+    res.status(statusCodes.created).send(status.ok);
 });
 
 app.post("/tweets", (req, res) => {
@@ -38,14 +38,14 @@ app.post("/tweets", (req, res) => {
 
     //Retorna 400 quando a propriedade 'username' e/ou 'tweet' não estão presentes
     if (!(req.body.hasOwnProperty("username") || req.header("user")) || !(req.body.hasOwnProperty("tweet"))) {
-        res.status(statusCodes.badRequest).send("Todos os campos são obrigatórios!");
+        res.status(statusCodes.badRequest).send(status.badRequest1);
         return;
     }
 
     if (req.body.hasOwnProperty("username")) {
         //Retorna 400 quando o username é vazio e/ou não é string
         if (!req.body.username || typeof req.body.username !== "string") {
-            res.status(statusCodes.badRequest).send("Todos os campos são obrigatórios!");
+            res.status(statusCodes.badRequest).send(status.badRequest1);
             return;
         }
     }
@@ -53,14 +53,14 @@ app.post("/tweets", (req, res) => {
     if (req.header("user")) {
         //Retorna 400 quando o username é vazio e/ou não é string
         if (!req.header("user") || typeof req.header("user") !== "string") {
-            res.status(statusCodes.badRequest).send("Todos os campos são obrigatórios!");
+            res.status(statusCodes.badRequest).send(status.badRequest1);
             return;
         }
     }
     
     //Retorna 400 quando o tweet é vazio e/ou não é string
     if (!req.body.tweet || typeof req.body.tweet !== "string") {
-        res.status(statusCodes.badRequest).send("Todos os campos são obrigatórios!");
+        res.status(statusCodes.badRequest).send(status.badRequest1);
         return;
     }
 
@@ -75,12 +75,10 @@ app.post("/tweets", (req, res) => {
 
     if (usuarioLogado) {
         tweets.push(tweet);
-        res.status(statusCodes.created).send("OK");
+        res.status(statusCodes.created).send(status.ok);
     } else {
-        res.status(statusCodes.unauthorized).send("UNAUTHORIZED");
+        res.status(statusCodes.unauthorized).send(status.unauthorized);
     }
-
-    console.log(tweets); 
 });
 
 app.get("/tweets", (req, res) => {
@@ -91,7 +89,7 @@ app.get("/tweets", (req, res) => {
         page = Number(req.query.page);
 
         if (Number.isInteger(page) && page < 1 || isNaN(page) || !Number.isInteger(page)) {
-            res.status(statusCodes.badRequest).send("Informe uma página válida!");
+            res.status(statusCodes.badRequest).send(status.badRequest2);
             return;
         }
 
@@ -122,8 +120,6 @@ app.get("/tweets", (req, res) => {
     });
 
     res.send(body);
-
-    console.log(tweets);
 });
 
 app.get("/tweets/:username", (req, res) => {
@@ -149,3 +145,10 @@ const statusCodes = {
     badRequest: 400,
     unauthorized: 401,
 };
+
+const status = {
+    ok: "OK",
+    badRequest1: "Todos os campos são obrigatórios!",
+    badRequest2: "Informe uma página válida!",
+    unauthorized: "UNAUTHORIZED"
+}; 

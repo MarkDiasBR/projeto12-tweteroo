@@ -13,5 +13,16 @@ app.post("/sign-up", (req, res) => {
     res.send("OK");
 });
 
+app.post("/tweets", (req, res) => {
+    const tweet = res.body;
+
+    const usuarioLogado = usuarios.find(u => u.username === tweet.username);
+
+    if (usuarioLogado) {
+        tweets.push(tweet);
+        res.send("OK");
+    }
+});
+
 const PORT = 5000;
 app.listen(PORT, ()=>console.log(`Servidor rodando na porta ${PORT}`));

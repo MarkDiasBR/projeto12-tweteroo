@@ -105,7 +105,6 @@ app.get("/tweets", (req, res) => {
 
     body = body.map(t => {
         const usuario = usuarios.find(u => u.username === t.username);
-        
         return ({avatar: `${usuario.avatar}`,...t});
     });
 
@@ -120,7 +119,6 @@ app.get("/tweets/:username", (req, res) => {
 
     body = body.map(t => {
         const usuario = usuarios.find(u => u.username === t.username);
-        
         return ({avatar: `${usuario.avatar}`,...t});
     });
 

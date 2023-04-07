@@ -33,17 +33,32 @@ app.post("/sign-up", (req, res) => {
 });
 
 app.post("/tweets", (req, res) => {
+    console.log(req)
+
+    console.log("req.headers", req.header("username"));
+
+    // let usuarioLogado = undefined;
 
     //Retorna 400 quando a propriedade 'username' e/ou 'tweet' não estão presentes
-    if (!(req.body.hasOwnProperty("username")) || !(req.body.hasOwnProperty("tweet"))) {
+    if (!(req.body.hasOwnProperty("username") || req.header("username")) || !(req.body.hasOwnProperty("tweet"))) {
         res.status(400).send("Todos os campos são obrigatórios!");
         return;
     }
 
-    //Retorna 400 quando o username é vazio e/ou não é string
-    if (!req.body.username || typeof req.body.username !== "string") {
-        res.status(400).send("Todos os campos são obrigatórios!");
-        return;
+    if (req.body.hasOwnProperty("username")) {
+        //Retorna 400 quando o username é vazio e/ou não é string
+        if (!req.body.username || typeof req.body.username !== "string") {
+            res.status(400).send("Todos os campos são obrigatórios!");
+            return;
+        }
+    }
+
+    if (req.header("username")) {
+        //Retorna 400 quando o username é vazio e/ou não é string
+        if (!req.header("username") || typeof req.header("username") !== "string") {
+            res.status(400).send("Todos os campos são obrigatórios!");
+            return;
+        }
     }
     
     //Retorna 400 quando o tweet é vazio e/ou não é string
@@ -53,8 +68,9 @@ app.post("/tweets", (req, res) => {
     }
 
     const tweet = req.body;
+    const tweetHeader = req.header("username");
 
-    const usuarioLogado = usuarios.find(u => u.username === tweet.username);
+    const usuarioLogado = usuarios.find(u => u.username === tweet.username || u.username === tweetHeader);
 
     if (usuarioLogado) {
         tweets.push(tweet);

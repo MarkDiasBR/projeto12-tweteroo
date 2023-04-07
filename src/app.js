@@ -91,7 +91,7 @@ app.get("/tweets", (req, res) => {
         page = Number(req.query.page);
 
         if (Number.isInteger(page) && page < 1 || isNaN(page) || !Number.isInteger(page)) {
-            res.status(400).send("Informe uma página válida!");
+            res.status(statusCodes.badRequest).send("Informe uma página válida!");
             return;
         }
 

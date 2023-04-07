@@ -77,5 +77,19 @@ app.get("/tweets", (req, res) => {
     res.send(body);
 });
 
+app.get("/tweets/:username", (req, res) => {
+    const nomeUsuario = req.params.username;
+
+    let body = tweets.filter(t => t.username === nomeUsuario)
+
+    body = body.map(t => {
+        const usuario = usuarios.find(u => u.username === t.username);
+        
+        return ({avatar: `${usuario.avatar}`,...t})
+    })
+
+    res.send(body);
+});
+
 const PORT = 5000;
 app.listen(PORT, ()=>console.log(`Servidor rodando na porta ${PORT}`));

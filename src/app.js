@@ -33,22 +33,19 @@ app.post("/sign-up", (req, res) => {
 });
 
 app.post("/tweets", (req, res) => {
-    console.log(req)
-
-    console.log("req.headers", req.header("username"));
 
     // let usuarioLogado = undefined;
 
     //Retorna 400 quando a propriedade 'username' e/ou 'tweet' não estão presentes
     if (!(req.body.hasOwnProperty("username") || req.header("username")) || !(req.body.hasOwnProperty("tweet"))) {
-        res.status(400).send("Todos os campos são obrigatórios!");
+        res.status(statusCodes.badRequest).send("Todos os campos são obrigatórios!");
         return;
     }
 
     if (req.body.hasOwnProperty("username")) {
         //Retorna 400 quando o username é vazio e/ou não é string
         if (!req.body.username || typeof req.body.username !== "string") {
-            res.status(400).send("Todos os campos são obrigatórios!");
+            res.status(statusCodes.badRequest).send("Todos os campos são obrigatórios!");
             return;
         }
     }
@@ -56,28 +53,34 @@ app.post("/tweets", (req, res) => {
     if (req.header("username")) {
         //Retorna 400 quando o username é vazio e/ou não é string
         if (!req.header("username") || typeof req.header("username") !== "string") {
-            res.status(400).send("Todos os campos são obrigatórios!");
+            res.status(statusCodes.badRequest).send("Todos os campos são obrigatórios!");
             return;
         }
     }
     
     //Retorna 400 quando o tweet é vazio e/ou não é string
     if (!req.body.tweet || typeof req.body.tweet !== "string") {
-        res.status(400).send("Todos os campos são obrigatórios!");
+        res.status(statusCodes.badRequest).send("Todos os campos são obrigatórios!");
         return;
     }
 
-    const tweet = req.body;
+    let tweet = req.body;
     const tweetHeader = req.header("username");
 
     const usuarioLogado = usuarios.find(u => u.username === tweet.username || u.username === tweetHeader);
 
+    if (!tweet.hasOwnProperty("username")) {
+        tweet = {username:`${tweetHeader}`,...tweet}
+    }
+
     if (usuarioLogado) {
         tweets.push(tweet);
-        res.status(201).send("OK");
+        res.status(statusCodes.created).send("OK");
     } else {
-        res.status(401).send("UNAUTHORIZED");
+        res.status(statusCodes.unauthorized).send("UNAUTHORIZED");
     }
+
+    console.log(tweets); 
 });
 
 app.get("/tweets", (req, res) => {
@@ -119,6 +122,8 @@ app.get("/tweets", (req, res) => {
     });
 
     res.send(body);
+
+    // console.log(tweets);
 });
 
 app.get("/tweets/:username", (req, res) => {
@@ -137,3 +142,10 @@ app.get("/tweets/:username", (req, res) => {
 
 const PORT = 5000;
 app.listen(PORT, ()=>console.log(`Servidor rodando na porta ${PORT}`));
+
+const statusCodes = {
+    ok: 200,
+    created: 201,
+    badRequest: 400,
+    unauthorized: 401,
+};

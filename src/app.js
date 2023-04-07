@@ -21,6 +21,8 @@ app.post("/tweets", (req, res) => {
     if (usuarioLogado) {
         tweets.push(tweet);
         res.send("OK");
+    } else {
+        res.send("UNAUTHORIZED");
     }
 });
 

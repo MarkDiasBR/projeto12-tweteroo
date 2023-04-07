@@ -65,8 +65,21 @@ app.post("/tweets", (req, res) => {
 });
 
 app.get("/tweets", (req, res) => {
+    let page = undefined;
+    let body = tweets;
 
-    let body = tweets.length>10 ? tweets.slice(tweets.length - 10) : tweets;
+    if (req.query.page) {
+        page = Number(req.query.page);
+
+        if (Number.isInteger(page) && page < 1 || isNaN(page) || !Number.isInteger(page)) {
+            res.status(400).send("Informe uma página válida!");
+            return;
+        }
+    }
+    
+    body = body.length>10*page ? body.slice(body.length - 10*page) : body;
+
+    body = body.length>10 ? body.slice(body.length - 10) : body;
 
     body = body.map(t => {
         const usuario = usuarios.find(u => u.username === t.username);

@@ -28,13 +28,13 @@ app.post("/tweets", (req, res) => {
 
 app.get("/tweets", (req, res) => {
 
-    const body = tweets.length>10 ? tweets.slice(tweets.length - 10) : tweets;
+    let body = tweets.length>10 ? tweets.slice(tweets.length - 10) : tweets;
 
-    body.map(t => {
+    body = body.map(t => {
         const usuario = usuarios.find(u => u.username === t.username);
         
-        return {...t, avatar: usuario.avatar}
-        })
+        return ({avatar: `${usuario.avatar}`,...t})
+    })
 
     res.send(body);
 });

@@ -66,7 +66,7 @@ app.post("/tweets", (req, res) => {
 
 app.get("/tweets", (req, res) => {
     let page = undefined;
-    let body = tweets;
+    let body = [...tweets];
 
     if (req.query.page) {
         page = Number(req.query.page);
@@ -75,10 +75,19 @@ app.get("/tweets", (req, res) => {
             res.status(400).send("Informe uma página válida!");
             return;
         }
+
+        if (body.length>10*page) {
+            body = body.splice(body.length - 10*page,10);
+        } else if (body.length < 10*page && body.length > 10*(page-1)) {
+            body = body.splice(0,body.length - 10*(page-1));
+        } else {
+            body = [];
+        }
+
+        res.send(body);
+        return;
     }
     
-    body = body.length>10*page ? body.slice(body.length - 10*page) : body;
-
     body = body.length>10 ? body.slice(body.length - 10) : body;
 
     body = body.map(t => {

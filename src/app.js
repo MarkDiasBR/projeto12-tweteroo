@@ -9,11 +9,28 @@ const usuarios = [];
 const tweets = [];
 
 app.post("/sign-up", (req, res) => {
+
+    if (!(req.body.hasOwnProperty("username")) || !(req.body.hasOwnProperty("avatar"))) {
+        res.status(400).send("Todos os campos são obrigatórios!");
+        return;
+    }
+
+    if (!req.body.username && typeof req.body.username !== "string") {
+        res.status(400).send("Todos os campos são obrigatórios!");
+        return;
+    }
+    
+    if (!req.body.avatar && typeof req.body.avatar !== "string") {
+        res.status(400).send("Todos os campos são obrigatórios!");
+        return;
+    }
+
     usuarios.push(req.body);
     res.send("OK");
 });
 
 app.post("/tweets", (req, res) => {
+
     const tweet = req.body;
 
     const usuarioLogado = usuarios.find(u => u.username === tweet.username);

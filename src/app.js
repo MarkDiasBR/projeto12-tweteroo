@@ -34,32 +34,31 @@ app.post("/sign-up", (req, res) => {
 
 app.post("/tweets", (req, res) => {
 
-    // let usuarioLogado = undefined;
-
     //Retorna 400 quando a propriedade 'username' e/ou 'tweet' não estão presentes
     if (!(req.body.hasOwnProperty("username") || req.header("user")) || !(req.body.hasOwnProperty("tweet"))) {
         res.status(statusCodes.badRequest).send(status.badRequest1);
         return;
     }
 
-    if (req.body.hasOwnProperty("username")) {
-        //Retorna 400 quando o username é vazio e/ou não é string
-        if (!req.body.username || typeof req.body.username !== "string") {
-            res.status(statusCodes.badRequest).send(status.badRequest1);
-            return;
-        }
-    }
+    //Se o body tem a propriedade 'username' presente
+    //E se o req.body.username é vazio e/ou não é string
+    if (req.body.hasOwnProperty("username") && ((!req.body.username || typeof req.body.username !== "string"))) {
+        //Retorna 400
+        res.status(statusCodes.badRequest).send(status.badRequest1);
+        return;
+    }      
 
-    if (req.header("user")) {
-        //Retorna 400 quando o username é vazio e/ou não é string
-        if (!req.header("user") || typeof req.header("user") !== "string") {
-            res.status(statusCodes.badRequest).send(status.badRequest1);
-            return;
-        }
+    //Se o header tem a propriedade 'user' presente
+    //E se o req.header.('user') é vazio e/ou não é string
+    if (req.header("user") && (!req.header("user") || typeof req.header("user") !== "string")) {
+        //Retorna 400
+        res.status(statusCodes.badRequest).send(status.badRequest1);
+        return;
     }
     
     //Retorna 400 quando o tweet é vazio e/ou não é string
     if (!req.body.tweet || typeof req.body.tweet !== "string") {
+        //Retorna 400
         res.status(statusCodes.badRequest).send(status.badRequest1);
         return;
     }
@@ -82,7 +81,7 @@ app.post("/tweets", (req, res) => {
 });
 
 app.get("/tweets", (req, res) => {
-    let page = undefined;
+    let page = null;
     let body = [...tweets];
 
     if (req.query.page) {
@@ -109,17 +108,18 @@ app.get("/tweets", (req, res) => {
 
         res.send(body);
         return;
+    } else {
+        body = body.length>10 ? body.slice(body.length - 10) : body;
+
+        body = body.map(t => {
+            const usuario = usuarios.find(u => u.username === t.username);
+            
+            return ({avatar: `${usuario.avatar}`,...t});
+        });
+
+        res.send(body);
+        return;
     }
-    
-    body = body.length>10 ? body.slice(body.length - 10) : body;
-
-    body = body.map(t => {
-        const usuario = usuarios.find(u => u.username === t.username);
-        
-        return ({avatar: `${usuario.avatar}`,...t});
-    });
-
-    res.send(body);
 });
 
 app.get("/tweets/:username", (req, res) => {

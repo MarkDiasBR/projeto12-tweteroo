@@ -42,7 +42,7 @@ app.post("/tweets", (req, res) => {
 
     //Se o body tem a propriedade 'username' presente
     //E se o req.body.username é vazio e/ou não é string
-    if (req.body.hasOwnProperty("username") && ((!req.body.username || typeof req.body.username !== "string"))) {
+    if (req.body.hasOwnProperty("username") && (!req.body.username || typeof req.body.username !== "string")) {
         //Retorna 400
         res.status(statusCodes.badRequest).send(status.badRequest1);
         return;
@@ -99,27 +99,18 @@ app.get("/tweets", (req, res) => {
         } else {
             body = [];
         }
-
-        body = body.map(t => {
-            const usuario = usuarios.find(u => u.username === t.username);
-            
-            return ({avatar: `${usuario.avatar}`,...t});
-        });
-
-        res.send(body);
-        return;
     } else {
         body = body.length>10 ? body.slice(body.length - 10) : body;
-
-        body = body.map(t => {
-            const usuario = usuarios.find(u => u.username === t.username);
-            
-            return ({avatar: `${usuario.avatar}`,...t});
-        });
-
-        res.send(body);
-        return;
     }
+
+    body = body.map(t => {
+        const usuario = usuarios.find(u => u.username === t.username);
+        
+        return ({avatar: `${usuario.avatar}`,...t});
+    });
+
+    res.send(body);
+    return;
 });
 
 app.get("/tweets/:username", (req, res) => {

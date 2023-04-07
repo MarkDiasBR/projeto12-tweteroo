@@ -14,7 +14,7 @@ app.post("/sign-up", (req, res) => {
 });
 
 app.post("/tweets", (req, res) => {
-    const tweet = res.body;
+    const tweet = req.body;
 
     const usuarioLogado = usuarios.find(u => u.username === tweet.username);
 
@@ -22,16 +22,11 @@ app.post("/tweets", (req, res) => {
         tweets.push(tweet);
         res.send("OK");
     } else {
-        res.send("UNAUTHORIZED");
+        res.status(401).send("UNAUTHORIZED");
     }
 });
 
 app.get("/tweets", (req, res) => {
-    // let tweetBody = {
-    //     username: "",
-    //     avatar: "",
-    //     tweet: ""
-    // };
 
     const body = tweets.length>10 ? tweets.slice(tweets.length - 10) : tweets;
 

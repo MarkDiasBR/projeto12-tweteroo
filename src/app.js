@@ -70,7 +70,7 @@ app.post("/tweets", (req, res) => {
     const usuarioLogado = usuarios.find(u => u.username === tweet.username || u.username === tweetHeader);
 
     if (!tweet.hasOwnProperty("username")) {
-        tweet = {username:`${tweetHeader}`,...tweet}
+        tweet = {username:`${tweetHeader}`,...tweet};
     }
 
     if (usuarioLogado) {
@@ -104,7 +104,7 @@ app.get("/tweets", (req, res) => {
         body = body.map(t => {
             const usuario = usuarios.find(u => u.username === t.username);
             
-            return ({avatar: `${usuario.avatar}`,...t})
+            return ({avatar: `${usuario.avatar}`,...t});
         });
 
         res.send(body);
@@ -116,7 +116,7 @@ app.get("/tweets", (req, res) => {
     body = body.map(t => {
         const usuario = usuarios.find(u => u.username === t.username);
         
-        return ({avatar: `${usuario.avatar}`,...t})
+        return ({avatar: `${usuario.avatar}`,...t});
     });
 
     res.send(body);
@@ -125,13 +125,13 @@ app.get("/tweets", (req, res) => {
 app.get("/tweets/:username", (req, res) => {
     const nomeUsuario = req.params.username;
 
-    let body = tweets.filter(t => t.username === nomeUsuario)
+    let body = tweets.filter(t => t.username === nomeUsuario);
 
     body = body.map(t => {
         const usuario = usuarios.find(u => u.username === t.username);
         
-        return ({avatar: `${usuario.avatar}`,...t})
-    })
+        return ({avatar: `${usuario.avatar}`,...t});
+    });
 
     res.send(body);
 });

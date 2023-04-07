@@ -26,5 +26,23 @@ app.post("/tweets", (req, res) => {
     }
 });
 
+app.get("/tweets", (req, res) => {
+    // let tweetBody = {
+    //     username: "",
+    //     avatar: "",
+    //     tweet: ""
+    // };
+
+    const body = tweets.length>10 ? tweets.slice(tweets.length - 10) : tweets;
+
+    body.map(t => {
+        const usuario = usuarios.find(u => u.username === t.username);
+        
+        return {...t, avatar: usuario.avatar}
+        })
+
+    res.send(body);
+});
+
 const PORT = 5000;
 app.listen(PORT, ()=>console.log(`Servidor rodando na porta ${PORT}`));
